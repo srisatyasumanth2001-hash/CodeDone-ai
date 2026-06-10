@@ -2,17 +2,20 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
+import Chat from './pages/chat'
+import Files  from './pages/Files'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public routes — anyone can access */}
+
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        {/* Protected routes — must be logged in */}
+        {/* Protected dashboard — everything inside here shares the sidebar */}
         <Route
           path="/dashboard"
           element={
@@ -21,14 +24,21 @@ function App() {
             </ProtectedRoute>
           }
         >
-          {/* Child routes render inside Dashboard's <Outlet /> */}
-          <Route path="chat" element={<div className="p-8 text-white">Chat coming in Phase 2</div>} />
-          <Route path="files" element={<div className="p-8 text-white">Files coming in Phase 3</div>} />
-          <Route path="search" element={<div className="p-8 text-white">Search coming in Phase 4</div>} />
+          {/* These render inside Dashboard's <Outlet /> */}
+          <Route index element={<Navigate to="chat" replace />} />
+          <Route path="chat" element={<Chat />} />
+          <Route path="files" element={<Files />} />
+          <Route
+            path="search"
+            element={
+              <div className="p-8 text-white">Search coming in Phase 4</div>
+            }
+          />
         </Route>
 
-        {/* Default redirect */}
+        {/* Catch all */}
         <Route path="*" element={<Navigate to="/login" replace />} />
+
       </Routes>
     </BrowserRouter>
   )
