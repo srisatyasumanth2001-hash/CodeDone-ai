@@ -46,3 +46,20 @@ export interface StreamMetadata{
   conversation_id: number,
   is_first_message: boolean
 }
+
+export interface UploadedFile{
+  id : number,
+  original_filename : string,
+  file_type : string,
+  file_size : number,
+  created_at : string
+}
+
+export interface UploadResponse {
+  file_id: number
+  filename: string
+  file_type: string
+  file_size: number
+  word_count: number
+  message: string
+}

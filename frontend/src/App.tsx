@@ -4,6 +4,7 @@ import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
 import Chat from './pages/chat'
 import Files  from './pages/Files'
+import FileChat from './pages/FileChat'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route index element={<Navigate to="chat" replace />} />
           <Route path="chat" element={<Chat />} />
           <Route path="files" element={<Files />} />
+          <Route path="files/:fileId/chat" element={<FileChat />} />
           <Route
             path="search"
             element={

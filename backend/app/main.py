@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1 import auth
-from app.api.v1 import chat
+from app.api.v1 import chat, files
 from app.models.user import User
 # from app.core.database import engine, Base
 
@@ -15,6 +15,8 @@ app.add_middleware(
     allow_headers=["*"],)
 app.include_router(auth.router,prefix="/api/v1/auth",tags=["Authentication"])
 app.include_router(chat.router,prefix="/api/v1/chat",tags=["Chat"] )
+app.include_router(files.router,prefix="/api/v1/files",tags=["Files"])
+
 # Base.metadata.create_all(bind=engine)
 @app.get("/")
 def root():    
