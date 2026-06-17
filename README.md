@@ -254,6 +254,6 @@ MIT License — feel free to use this project as a reference for your own learni
 **Sumanth**
 Building CodeAtlas AI to demonstrate full-stack and AI engineering skills beyond day-to-day work experience.
 
-[GitHub](#) · [LinkedIn](#)
+[GitHub](https://github.com/srisatyasumanth2001-hash/CodeDone-ai) · [LinkedIn](https://www.linkedin.com/in/sri-satya-sumanth-mandapalli-921299229/)
 
 </div>
