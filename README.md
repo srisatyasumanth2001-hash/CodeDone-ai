@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ CodeAtlas AI
+# ⚡ CodeDone AI
 
 ### An AI-powered full-stack developer platform for learning, building, debugging, and understanding software systems.
 
@@ -19,7 +19,7 @@
 
 ## 📖 Overview
 
-**CodeAtlas AI** is a production-grade, AI-powered SaaS platform built for developers, students, and engineers who want to learn, build, debug, and understand software systems faster using artificial intelligence.
+**CodeDone AI** is a production-grade, AI-powered SaaS platform built for developers, students, and engineers who want to learn, build, debug, and understand software systems faster using artificial intelligence.
 
 It combines modern full-stack web development with real AI engineering — streaming chat, retrieval-augmented generation (RAG), semantic document search, and codebase analysis — into a single, cohesive developer workspace.
 
@@ -45,7 +45,7 @@ This is not a tutorial project. It is architected the way a real SaaS product is
 
 ## 🏗️ Architecture
 
-CodeAtlas follows a strict three-tier architecture with clean separation of concerns on both the frontend and backend.
+CodeDone follows a strict three-tier architecture with clean separation of concerns on both the frontend and backend.
 
 ```
 ┌─────────────────┐        HTTP/SSE        ┌──────────────────┐        SQL/Vector        ┌──────────────────┐
@@ -122,7 +122,7 @@ This separation means every layer can be tested, modified, and reasoned about in
 ## 📂 Project Structure
 
 ```
-codeatlas-ai/
+CodeDone-ai/
 ├── frontend/
 │   └── src/
 │       ├── api/            # Axios instance + typed API functions
@@ -156,8 +156,8 @@ codeatlas-ai/
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/codeatlas-ai.git
-cd codeatlas-ai
+git clone https://github.com/srisatyasumanth2001-hash/CodeDone-ai
+cd CodeDone-ai
 ```
 
 ### 2. Backend setup
@@ -174,14 +174,14 @@ cp .env.example .env
 
 `.env` should contain:
 ```
-DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/codeatlas
+DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/CodeDone
 SECRET_KEY=your-random-secret-key
 OPENAI_API_KEY=sk-your-key-here
 ```
 
 ```bash
 # Enable pgvector and run migrations
-psql -U postgres -d codeatlas -c "CREATE EXTENSION IF NOT EXISTS vector;"
+psql -U postgres -d CodeDone -c "CREATE EXTENSION IF NOT EXISTS vector;"
 alembic upgrade head
 
 # Run the server
@@ -215,7 +215,7 @@ Chat responses stream token-by-token using **Server-Sent Events**. The backend u
 3. **Generate** — retrieved chunks are injected into the prompt as grounded context, and GPT-4o generates an answer based only on that context — with source citations shown in the UI.
 
 ### Why pgvector over a dedicated vector DB?
-CodeAtlas already runs on PostgreSQL. Using `pgvector` keeps the entire system on one database — no extra infrastructure, no second set of credentials, and the ability to combine relational filtering (`WHERE user_id = ...`) with vector search in a single SQL query.
+CodeDone already runs on PostgreSQL. Using `pgvector` keeps the entire system on one database — no extra infrastructure, no second set of credentials, and the ability to combine relational filtering (`WHERE user_id = ...`) with vector search in a single SQL query.
 
 ---
 
@@ -224,35 +224,17 @@ CodeAtlas already runs on PostgreSQL. Using `pgvector` keeps the entire system o
 - [x] **Phase 1** — Authentication, project architecture, dashboard shell
 - [x] **Phase 2** — Streaming AI chat assistant with conversation memory
 - [x] **Phase 3** — File upload, PDF extraction, file-based chat
-- [x] **Phase 4** — Full RAG pipeline with pgvector semantic search
+- [ ] **Phase 4** — Full RAG pipeline with pgvector semantic search
 - [ ] **Phase 5** — GitHub repository ingestion & codebase Q&A
 - [ ] **Phase 6** — Developer dashboard, analytics, project workspaces
 - [ ] **Phase 7** — Docker, CI/CD, production deployment
 
 ---
 
-## 📸 Screenshots
-
-> _Add screenshots or a short demo GIF here once the UI polish pass is complete._
-
----
-
-## 🤝 Contributing
-
-This is currently a solo portfolio project, but suggestions and issues are welcome — feel free to open an issue.
-
----
-
-## 📄 License
-
-MIT License — feel free to use this project as a reference for your own learning.
-
----
-
 ## 👤 Author
 
 **Sumanth**
-Building CodeAtlas AI to demonstrate full-stack and AI engineering skills beyond day-to-day work experience.
+Building CodeDone AI to demonstrate full-stack and AI engineering skills beyond day-to-day work experience.
 
 [GitHub](https://github.com/srisatyasumanth2001-hash/CodeDone-ai) · [LinkedIn](https://www.linkedin.com/in/sri-satya-sumanth-mandapalli-921299229/)
 
