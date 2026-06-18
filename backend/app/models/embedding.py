@@ -13,3 +13,5 @@ class Embedding(Base):
     chunk_index: Mapped[int] = mapped_column(Integer, nullable=False)  # position in document
     embedding: Mapped[list] = mapped_column(Vector(1536), nullable=False)  # pgvector column
     created_at: Mapped[DateTime] = mapped_column(DateTime, default=func.now())
+
+    document = relationship("Document",back_populates="embeddings")

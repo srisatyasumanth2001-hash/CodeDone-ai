@@ -63,3 +63,15 @@ export interface UploadResponse {
   word_count: number
   message: string
 }
+
+export interface ChunkResult {
+  chunk_text: string
+  similarity: number
+  document_id: number
+}
+
+export interface SearchResult {
+  sources: ChunkResult[]
+  answer: string
+  query: string
+}

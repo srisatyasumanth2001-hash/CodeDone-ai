@@ -4,7 +4,7 @@ from app.core.database import get_db
 from app.services import user_service
 from app.core.security import get_current_user
 from app.models.user import User
-from app.schemas.auth import SignupRequest, LoginRequest, TokenResponse, UserResponse
+from app.schemas.auth import SignupRequest, LoginRequest, TokenResponse, UserResponse, RefreshRequest
 from app.core.security import verify_password, create_access_token, create_refresh_token, verify_token
 
 router = APIRouter()
@@ -31,3 +31,22 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
 @router.get("/me", response_model=UserResponse)
 def read_current_user(current_user: User = Depends(get_current_user)):
     return current_user
+
+@router.post("/refresh")
+def refresh(data: RefreshRequest):
+
+    payload = verify_token(data.refresh_token)
+
+    if payload.get("type") != "refresh":
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid refresh token"
+        )
+
+    user_id = int(payload["sub"])
+
+    access_token = create_access_token(user_id)
+
+    return {
+        "access_token": access_token
+    }

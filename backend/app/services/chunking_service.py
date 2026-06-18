@@ -6,7 +6,7 @@ def count_tokens(text: str) -> int:
     return len(encoder.encode(text))
 
 def chunk_text(text: str, chunk_size: int= 500, overlap: int = 50) -> list[str]:
-    if not text or text.strip():
+    if not text or not text.strip():
         return []
     tokens = encoder.encode(text)
     chunks =[]
@@ -28,3 +28,4 @@ def chunk_document(document_content: str)-> list[dict]:
         {"index":i, "text":chunk}
         for i, chunk in enumerate(raw_chunks)
     ]
+

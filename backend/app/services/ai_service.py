@@ -97,3 +97,23 @@ def stream_file_chat_response(
             yield f"data: {delta}\n\n"
 
     yield "data: [DONE]\n\n"
+
+def stream_rag_response(rag_prompt:str, query:str) -> Generator:
+    messages =[
+        {
+            "role" : "system",
+            "content" : rag_prompt
+        }
+    ]
+    stream =client.chat.completions.create(
+        model ="gpt-4o-mini",
+        messages= messages,
+        max_tokens =1500,
+        temperature= 0.3,
+        stream = True
+    )
+    for chunk in stream:
+        delta = chunk.choices[0].delta.content
+        if delta is not None:
+            yield f"data: {delta}\n\n"
+    yield "data: [DONE]\n\n"

@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard'
 import Chat from './pages/chat'
 import Files  from './pages/Files'
 import FileChat from './pages/FileChat'
+import Search from './pages/Search'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -30,17 +31,19 @@ function App() {
           <Route path="chat" element={<Chat />} />
           <Route path="files" element={<Files />} />
           <Route path="files/:fileId/chat" element={<FileChat />} />
-          <Route
-            path="search"
-            element={
-              <div className="p-8 text-white">Search coming in Phase 4</div>
-            }
-          />
+          <Route path="search" element={<Search />} />
         </Route>
 
         {/* Catch all */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
-
+        <Route
+          path="/"
+          element={
+            localStorage.getItem("access_token")
+              ? <Navigate to="/dashboard/chat" replace />
+              : <Navigate to="/login" replace />
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   )

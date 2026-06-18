@@ -53,7 +53,7 @@ def upload_files(
     )
     db.add(document_record)
     db.commit()
-    db.refresh(file_record)
+    db.refresh(document_record)
 
     return {
         "file_id" : file_record.id,

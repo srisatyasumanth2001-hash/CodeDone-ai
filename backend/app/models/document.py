@@ -13,3 +13,4 @@ class Document(Base):
     created_at: Mapped[DateTime] = mapped_column(DateTime, default=func.now())
 
     file = relationship("File", back_populates="document")
+    embeddings = relationship("Embedding",back_populates="document",cascade="all, delete-orphan")
