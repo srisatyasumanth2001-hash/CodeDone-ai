@@ -58,6 +58,10 @@ export default function Dashboard() {
             <span>🔍</span>
             <span className="whitespace-nowrap">Doc Search</span>
           </NavLink>
+          <NavLink to="/dashboard/repositories" className={navLinkClass}>
+            <span>🗂️</span>
+            <span>Repositories</span>
+          </NavLink>
         </nav>
 
         {/* Spacer */}

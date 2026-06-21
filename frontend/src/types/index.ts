@@ -75,3 +75,12 @@ export interface SearchResult {
   answer: string
   query: string
 }
+
+export interface Repository {
+  id: number
+  repo_url: string
+  owner: string
+  repo_name: string
+  status: 'pending' | 'ingesting' | 'completed' | 'failed'
+  files_ingested: number
+}

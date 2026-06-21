@@ -6,6 +6,7 @@ import Chat from './pages/chat'
 import Files  from './pages/Files'
 import FileChat from './pages/FileChat'
 import Search from './pages/Search'
+import Repositories from './pages/Repositories'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <Route path="files" element={<Files />} />
           <Route path="files/:fileId/chat" element={<FileChat />} />
           <Route path="search" element={<Search />} />
+          <Route path="repositories" element={<Repositories />} />
         </Route>
 
         {/* Catch all */}
