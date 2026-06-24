@@ -88,9 +88,24 @@ export default function FileChat() {
 
           try {
             const event = JSON.parse(dataStr)
+
             if (event.type === 'metadata') {
               setConversationId(event.conversation_id)
-            } else if (event.type === 'token') {
+
+              // patch the user message's fake id with the real one
+              if (event.user_message_id) {
+                setMessages(prev => {
+                  const updated = [...prev]
+                  const userIndex = updated.length - 2  // AI placeholder is last, user msg right before it
+                  if (userIndex >= 0 && updated[userIndex].role === 'user') {
+                    updated[userIndex] = { ...updated[userIndex], id: event.user_message_id }
+                  }
+                  return updated
+                })
+              }
+            }
+
+            else if (event.type === 'token') {
               setMessages(prev => {
                 const updated = [...prev]
                 const last = updated[updated.length - 1]
@@ -104,6 +119,19 @@ export default function FileChat() {
               })
               scrollToBottom()
             }
+
+            else if (event.type === 'assistant_message_id') {
+              // patch the AI message's fake id with the real one
+              setMessages(prev => {
+                const updated = [...prev]
+                const last = updated[updated.length - 1]
+                if (last.role === 'assistant') {
+                  return [...updated.slice(0, -1), { ...last, id: event.data }]
+                }
+                return updated
+              })
+            }
+
           } catch { }
         }
       }
@@ -117,7 +145,6 @@ export default function FileChat() {
   return (
     <div className="flex flex-col h-full">
 
-      {/* header */}
       <div className="h-14 border-b border-gray-800 flex items-center px-6 gap-3 flex-shrink-0">
         <button
           onClick={() => navigate('/dashboard/files')}
@@ -131,7 +158,6 @@ export default function FileChat() {
         </span>
       </div>
 
-      {/* messages */}
       <div className="flex-1 overflow-y-auto px-6 py-4">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center">

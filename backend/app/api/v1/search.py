@@ -43,16 +43,13 @@ def stream_search(
             headers={"Cache-Control": "no-cache", "X-Accel-Buffering" :"no"}
         )
     def generate():
-        yield f"data: {json.dumps({'type': 'sources', 'data':source_chunks})}\n\n"
-        full_response =""
-        for chunk in stream_rag_response(rag_prompt, data.query):
-            if chunk == "data: [DONE]\n\n":
-                yield "data: [DONE]\n\n"
-                break
-            else: 
-                token = chunk.replace("data: ","").replace("\n\n", "")
-                full_response += token
-                yield f"data: {json.dumps({'type': 'token','data': token})}\n\n"
+        yield f"data: {json.dumps({'type': 'sources', 'data': source_chunks})}\n\n"
+        full_response = ""
+        for token in stream_rag_response(rag_prompt, data.query):
+            full_response += token
+            yield f"data: {json.dumps({'type': 'token', 'data': token})}\n\n"
+
+        yield "data: [DONE]\n\n"
     return StreamingResponse(
         generate(),
         media_type="text/event-stream",

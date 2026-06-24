@@ -129,30 +129,30 @@ async def chat_with_file(
 
         yield f"data: {json.dumps({'type': 'metadata', 'conversation_id': conversation_id})}\n\n"
 
-        for chunk in stream_file_chat_response(
+        for token in stream_file_chat_response(
             file_content, filename, history, user_message
         ):
-            if chunk == "data: [DONE]\n\n":
-              
-                from app.core.database import SessionLocal
-                save_db = SessionLocal()
-                try:
-                    ai_msg = Message(
-                        conversation_id=conversation_id,
-                        role="assistant",
-                        content=full_response
-                    )
-                    save_db.add(ai_msg)
-                    save_db.commit()
-                finally:
-                    save_db.close()
+            full_response += token
+            yield f"data: {json.dumps({'type': 'token', 'data': token})}\n\n"
 
-                yield "data: [DONE]\n\n"
-                break
-            else:
-                token = chunk.replace("data: ", "").replace("\n\n", "")
-                full_response += token
-                yield f"data: {json.dumps({'type': 'token', 'data': token})}\n\n"
+        # generator exhausted = OpenAI is done
+        from app.core.database import SessionLocal
+        save_db = SessionLocal()
+        try:
+            ai_msg = Message(
+                conversation_id=conversation_id,
+                role="assistant",
+                content=full_response
+            )
+            save_db.add(ai_msg)
+            save_db.commit()
+            save_db.refresh(ai_msg)
+
+            yield f"data: {json.dumps({'type': 'assistant_message_id', 'data': ai_msg.id})}\n\n"
+        finally:
+            save_db.close()
+
+        yield "data: [DONE]\n\n"
 
     return StreamingResponse(
         generate(),

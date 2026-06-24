@@ -4,7 +4,7 @@ from app.core.database import get_db
 from app.services import user_service
 from app.core.security import get_current_user
 from app.models.user import User
-from app.schemas.auth import SignupRequest, LoginRequest, TokenResponse, UserResponse, RefreshRequest
+from app.schemas.auth import SignupRequest, LoginRequest, TokenResponse, UserResponse, RefreshRequest, UpdateProfileRequest
 from app.core.security import verify_password, create_access_token, create_refresh_token, verify_token
 
 router = APIRouter()
@@ -50,3 +50,12 @@ def refresh(data: RefreshRequest):
     return {
         "access_token": access_token
     }
+
+@router.patch("/me", response_model=UserResponse)
+def update_profile(
+    data: UpdateProfileRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    updated_user = user_service.update_user_name(db, current_user.id, data.full_name)
+    return updated_user

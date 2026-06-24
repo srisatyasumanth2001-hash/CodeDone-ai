@@ -81,10 +81,10 @@ export default function FileUploadZone({ onUploadComplete }: Props) {
           </div>
         ) : (
           <div>
-            <p className="text-gray-300 text-sm font-medium mb-1">
+            <p className="text-gray-900 dark:text-white text-sm font-medium mb-1">
               Drop a file here or click to upload
             </p>
-            <p className="text-gray-500 text-xs">
+            <p className="text-gray-900 dark:text-white text-xs">
               PDF, Python, JavaScript, TypeScript, and more · Max 10MB
             </p>
           </div>

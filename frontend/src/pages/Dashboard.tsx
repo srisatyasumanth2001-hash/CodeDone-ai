@@ -1,9 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
+import ThemeToggle from '../components/ui/ThemeToggle'
+import GlobalSearchModal from '../components/search/GlobalSearchModal'
+import {
+  MessageSquare,
+  FileText,
+  Search,
+  FolderGit2,
+  LayoutDashboard,
+  LogOut,
+  Bookmark
+} from "lucide-react";
 
 export default function Dashboard() {
   const { user, logout } = useAuthStore()
+  const [searchOpen, setSearchOpen] = useState(false)
   const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
@@ -11,73 +23,140 @@ export default function Dashboard() {
     logout()
     navigate('/login')
   }
+   useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      // Cmd+K on Mac, Ctrl+K on Windows/Linux
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault() // stops the browser's own Ctrl+K behavior
+        setSearchOpen(true)
+      }
+      if (e.key === 'Escape') {
+        setSearchOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-      isActive
-        ? 'bg-gray-800 text-white'
-        : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
-    }`
+  `flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${
+    isActive
+      ? 'bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
+      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white'
+  }`
 
   return (
     <div
       style={{ display: 'flex', height: '100%', width: '100%', overflow: 'hidden' }}
-      className="bg-gray-950 text-white"
+      className="flex h-screen bg-slate-100 dark:bg-slate-950 text-gray-900 dark:text-white"
     >
+      
 
       {/* SIDEBAR */}
       <aside
         style={{
-          width: sidebarOpen ? '240px' : '0px',
+          width: sidebarOpen ? '220px' : '70px',
           flexShrink: 0,
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
           transition: 'width 0.25s ease',
         }}
-        className="bg-gray-900 border-r border-gray-800"
+       className="w-60 bg-white dark:bg-slate-950 border-r border-slate-200/60 dark:border-slate-800/60"
       >
         {/* Logo */}
-        <div style={{ flexShrink: 0 }} className="p-4 border-b border-gray-800">
-          <span className="text-lg font-semibold text-blue-400 whitespace-nowrap">
-            CodeDone AI
-          </span>
-        </div> 
+        <div
+          style={{ flexShrink: 0 }}
+          className="px-4 py-4 flex items-center justify-between"
+        >
+          {sidebarOpen ? (
+            <>
+              <span className="text-lg font-semibold text-blue-600 dark:text-blue-400 animate-pulse">
+                CodeDone AI
+              </span>
+              <ThemeToggle />
+            </>
+          ) : (
+            <div className="w-full flex justify-center">
+              <ThemeToggle />
+            </div>
+          )}
+        </div>
 
         {/* Nav */}
+        
         <nav style={{ flexShrink: 0 }} className="p-3 space-y-1">
-          <NavLink to="/dashboard/chat" className={navLinkClass}>
-            <span>💬</span>
-            <span className="whitespace-nowrap">AI Chat</span>
-          </NavLink>
-          <NavLink to="/dashboard/files" className={navLinkClass}>
-            <span>📄</span>
-            <span className="whitespace-nowrap">Files</span>
-          </NavLink>
-          <NavLink to="/dashboard/search" className={navLinkClass}>
-            <span>🔍</span>
-            <span className="whitespace-nowrap">Doc Search</span>
-          </NavLink>
-          <NavLink to="/dashboard/repositories" className={navLinkClass}>
-            <span>🗂️</span>
-            <span>Repositories</span>
-          </NavLink>
-        </nav>
 
+          <NavLink to="/dashboard/chat" className={navLinkClass} title='AI Chat'>
+            <span className="text-lg"><MessageSquare size={20} /></span>
+            {sidebarOpen && <span className="ml-3">AI Chat</span>}
+          </NavLink>
+
+          <NavLink to="/dashboard/files" className={navLinkClass} title='Files'>
+            <span className="text-lg"><FileText size={20} /></span>
+            {sidebarOpen && <span className="ml-3">Files</span>}
+          </NavLink>
+
+          <NavLink to="/dashboard/search" className={navLinkClass} title='Doc Search'>
+            <span className="text-lg"><Search size={20} /></span>
+            {sidebarOpen && <span className="ml-3">Doc Search</span>}
+          </NavLink>
+
+          <NavLink to="/dashboard/repositories" className={navLinkClass} title='Repositories'>
+            <span className="text-lg"><FolderGit2 size={20} /></span>
+            {sidebarOpen && <span className="ml-3">Repositories</span>}
+          </NavLink>
+
+          <NavLink to="/dashboard/overview" className={navLinkClass} title='Overview'>
+            <span className="text-lg"><LayoutDashboard size={20} /></span>
+            {sidebarOpen && <span className="ml-3">Overview</span>}
+          </NavLink>
+          <NavLink to="/dashboard/SavedResponses" className={navLinkClass} title='SavedResponse'>
+            <span className="text-lg"><Bookmark size={20} /></span>
+            {sidebarOpen && <span className="ml-3">SavedResponse</span>}
+          </NavLink>
+          {/* <NavLink to="/dashboard/Settings" className={navLinkClass} title='Settings'>
+            <span className="text-lg"><LayoutDashboard size={20} /></span>
+            {sidebarOpen && <span className="ml-3">Settings</span>}
+          </NavLink> */}
+
+        </nav>
+        <GlobalSearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />  
         {/* Spacer */}
         <div style={{ flex: 1 }} />
 
         {/* User section */}
-        <div style={{ flexShrink: 0 }} className="p-3 border-t border-gray-800">
-          <div className="text-xs text-gray-500 px-3 mb-2 truncate whitespace-nowrap">
+       <div style={{ flexShrink: 0 }} className="p-3">
+          {sidebarOpen && (
+          <div
+            className="
+              text-xs
+              text -slate-500
+              dark:text-slate-400
+              px-3
+              mb-2
+              truncate
+            "
+          >
             {user?.email}
           </div>
-          <button
+        )}
+          {/* <button
             onClick={handleLogout}
-            className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-gray-800 hover:text-red-400 transition-colors whitespace-nowrap"
-          >
-            Sign out
-          </button>
+            className="p-3 space-y-1" title='LogOut'>
+              <span className="text-lg"><LogOut size={20} /></span>
+            {sidebarOpen && <span className="ml-3">Sign Out</span>}
+          </button> */}
+          <button
+            onClick ={ handleLogout }
+            className =" p-3 flex items-center space-x-3 "
+            title =' Log Out '>
+            < span className =" text -lg ">
+            < LogOut size ={ 20 } />
+            </ span >
+            { sidebarOpen && < span > Sign Out </ span >}
+            </ button >
         </div>
       </aside>
 
@@ -92,14 +171,44 @@ export default function Dashboard() {
         }}
       >
         {/* TOP BAR — contains toggle button */}
-        <div
-          style={{ flexShrink: 0, height: '48px' }}
-          className="flex items-center gap-3 px-4 border-b border-gray-800 bg-gray-950"
+      <div
+        style={{ flexShrink: 0, height: '48px' }}
+        className="
+          flex
+          items-center
+          gap-3
+
+          px-5
+
+          bg-white/80
+          dark:bg-slate-950/80
+
+          backdrop-blur-md
+
+          border-b
+          border-slate-200/60
+          dark:border-slate-800/60
+        "
         >
           {/* Sidebar toggle button */}
           <button
             onClick={() => setSidebarOpen(prev => !prev)}
-            className="text-gray-400 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-gray-800"
+            className="
+             text -slate-500
+              dark:text-slate-400
+
+              hover:text-slate-900
+              dark:hover:text-white
+
+              hover:bg-slate-100
+              dark:hover:bg-slate-900
+
+              transition-all
+              duration-200
+
+              p-2
+              rounded-lg
+            "            
             title={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
           >
             {/* Hamburger / close icon */}
@@ -139,7 +248,7 @@ export default function Dashboard() {
 
           {/* Show logo when sidebar is closed so user knows where they are */}
           {!sidebarOpen && (
-            <span className="text-sm font-semibold text-blue-400">
+            <span className="text-sm font-semibold text-blue-600 dark:text-blue-400 animate-pulse">
               CodeDone AI
             </span>
           )}

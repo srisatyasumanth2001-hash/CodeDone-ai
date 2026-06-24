@@ -31,7 +31,7 @@ export default function SearchBar({ onSearch, isSearching }: Props) {
       {/* Search input */}
       <div className="flex gap-3 items-center bg-gray-800 border border-gray-700
                       rounded-xl px-4 py-3 focus-within:border-blue-500 transition-colors">
-        <span className="text-gray-400 text-lg">🔍</span>
+        <span className="text-slate-600 dark:text-slate-400 text-lg">🔍</span>
         <input
           type="text"
           value={input}
@@ -60,8 +60,8 @@ export default function SearchBar({ onSearch, isSearching }: Props) {
             <button
               key={sq}
               onClick={() => onSearch(sq)}
-              className="text-xs text-gray-400 border border-gray-700 rounded-lg
-                         px-3 py-1.5 hover:border-gray-500 hover:text-gray-200
+              className="text-xs text-slate-600 dark:text-slate-400 border border-gray-700 rounded-lg
+                         px-3 py-1.5 hover:border-gray-500 hover:text-slate-900 dark:text-slate-200
                          transition-colors"
             >
               {sq}

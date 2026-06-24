@@ -15,3 +15,8 @@ export const getMyProfile = async():Promise<User>=>{
     const response = await api.get('/auth/me')
     return response.data
 }
+
+export const updateProfile = async (fullName: string): Promise<User> => {
+  const response = await api.patch('/auth/me', { full_name: fullName })
+  return response.data
+}

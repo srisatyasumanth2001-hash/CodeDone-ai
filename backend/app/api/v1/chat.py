@@ -5,6 +5,7 @@ from app.core.database import get_db
 from app.core.security import get_current_user
 from app.models.user import User
 from app.models.message import Message
+from app.models.saved_response import SavedResponse
 from app.models.conversation import Conversation
 from app.services import chat_service
 from app.services import chat_service, ai_service
@@ -116,45 +117,46 @@ def stream_chat(
     user_message = data.message 
 
     def generate() -> Generator:
-        full_response =""
-        metadata= {
-            "conversation_id" : conversation_id,
-            "is_first_message": is_first_message
+        full_response = ""
+        metadata = {
+            "conversation_id": conversation_id,
+            "is_first_message": is_first_message,
+            "user_message_id": user_msg.id   # ← real id, already known at this point
         }
-        yield f"data: {json.dumps({'type': 'metadata', 'data':metadata})}\n\n"
+        yield f"data: {json.dumps({'type': 'metadata', 'data': metadata})}\n\n"
 
-        for chunk in ai_service.stream_ai_response(history, user_message):
-            if chunk =="data: [DONE]\n\n":
-                from app.core.database import SessionLocal
-                save_db = SessionLocal()
-                try: 
-                    ai_msg = Message(
-                        conversation_id = conversation_id,
-                        role = "assistant",
-                        content =full_response
-                    )
-                    save_db.add(ai_msg)
+        for token in ai_service.stream_ai_response(history, user_message):
+            full_response += token
+            yield f"data: {json.dumps({'type': 'token', 'data': token})}\n\n"
+
+        from app.core.database import SessionLocal
+        save_db = SessionLocal()
+        try:
+            ai_msg = Message(
+                conversation_id=conversation_id,
+                role="assistant",
+                content=full_response
+            )
+            save_db.add(ai_msg)
+            save_db.commit()
+            save_db.refresh(ai_msg)   # ← populates ai_msg.id with the real database id
+
+            # tell the frontend the real id, before [DONE]
+            yield f"data: {json.dumps({'type': 'assistant_message_id', 'data': ai_msg.id})}\n\n"
+
+            if is_first_message:
+                title = chat_service.generate_conversation_title(user_msg.content)
+                conv = save_db.query(Conversation).filter(
+                    Conversation.id == conversation_id
+                ).first()
+                if conv:
+                    conv.title = title
                     save_db.commit()
+                yield f"data: {json.dumps({'type': 'title', 'data': title})}\n\n"
+        finally:
+            save_db.close()
 
-                    if is_first_message:
-                        title = chat_service.generate_conversation_title(user_msg.content)
-                        conv = save_db.query(Conversation).filter(
-                            Conversation.id == conversation_id
-                        ).first()
-                        if conv:
-                            conv.title = title
-                            save_db.commit()
-                        yield f"data:{json.dumps({'type': 'title', 'data':title})}\n\n"
-                finally:
-                    save_db.close()
-
-                yield "data:[DONE]\n\n"
-                break
-            else:
-                token = chunk.replace("data:", "").replace("\n\n", "")
-                full_response += token
-
-                yield f"data:{json.dumps({'type':'token', 'data':token})}\n\n"
+        yield "data: [DONE]\n\n"
 
     return StreamingResponse(
         generate(),

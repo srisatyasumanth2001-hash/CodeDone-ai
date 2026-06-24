@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.conversation import Conversation
 from app.models.message import Message
+from app.models.saved_response import SavedResponse
 from app.services.ai_service import get_ai_response, generate_conversation_title
 
 def create_conversation(db: Session, user_id:int, title: str= "New Conversation"):
@@ -49,11 +50,29 @@ def save_message(db:Session, conversation_id:int, role:str, content:str):
     db.commit()
     db.refresh(message)
     return message
-def get_message_by_conversation(db: Session, conversation_id:int):
-    return(
-        db.query(Message).filter(Message.conversation_id==conversation_id).
-        order_by(Message.created_at.asc()).all()
+def get_message_by_conversation(db: Session, conversation_id:int, user_id:int):
+    messages=(
+        db.query(Message)
+        .filter(Message.conversation_id==conversation_id)
+        .order_by(Message.created_at.asc())
+        .all()
     )
+    saved_message_ids = {
+        row.message_id
+        for row in db.query(SavedResponse.message_id)
+        .filter(SavedResponse.user_id == user_id)
+        .all()
+    }
+    result =[]
+    for message in messages:
+        result.append({
+            "id": message.id,
+            "role": message.role,
+            "content": message.content,
+            "created_at": message.created_at,
+            "is_saved": message.id in saved_message_ids
+        })
+    return result
 
 def send_message_and_get_response(
         db: Session,

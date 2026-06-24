@@ -22,7 +22,7 @@ export default function ConnectRepoForm({ onConnect, isConnecting }: Props) {
   return (
     <div className="flex gap-3 items-center bg-gray-800 border border-gray-700
                     rounded-xl px-4 py-3 focus-within:border-blue-500 transition-colors">
-      <span className="text-gray-400">🔗</span>
+      <span className="text-slate-600 dark:text-slate-400">🔗</span>
       <input
         type="text"
         value={url}

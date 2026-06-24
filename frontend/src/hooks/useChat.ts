@@ -108,17 +108,44 @@ export function useChat(){
                     if (!line.trim()) continue
                     const dataStr =line.replace(/^data:\s*/, '').trim()
 
-                    if(dataStr === '[Done]'){
+                    if(dataStr === '[DONE]'){
                         setIsStreaming(false)
                         await loadConversations()
                         break
                     }
                     try{
                         const event = JSON.parse(dataStr)
-                        if (event.type === 'metadata'){
+                       if (event.type === 'metadata') {
                             const metadata = event.data as StreamMetadata
                             setActiveConversationId(metadata.conversation_id)
+
+                            // patch the user message's fake id with the real one
+                            if (metadata.user_message_id) {
+                                setMessages(prev => {
+                                    const updated = [...prev]
+                                    const userIndex = updated.length - 2   // AI placeholder is last, user msg before it
+                                    if (userIndex >= 0 && updated[userIndex].role === 'user') {
+                                        updated[userIndex] = { ...updated[userIndex], id: metadata.user_message_id! }
+                                    }
+                                    return updated
+                                })
+                            }
                         }
+
+                            else if (event.type === 'assistant_message_id') {
+                                // patch the AI message's fake id with the real one
+                                setMessages(prev => {
+                                    const updated = [...prev]
+                                    const lastMessage = updated[updated.length - 1]
+                                    if (lastMessage.role === 'assistant') {
+                                        return [
+                                            ...updated.slice(0, -1),
+                                            { ...lastMessage, id: event.data }
+                                        ]
+                                    }
+                                    return updated
+                                })
+                            }
                         else if(event.type === 'token'){
                             setMessages(prev => {
                                 const updated =[...prev]

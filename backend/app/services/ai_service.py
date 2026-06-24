@@ -46,8 +46,7 @@ def stream_ai_response(conversation_history:list, new_message:str)-> Generator:
     for chunk in stream:
         delta = chunk.choices[0].delta.content
         if delta is not None:
-            yield f"data: {delta}\n\n"
-    yield "data: [DONE]\n\n"
+            yield delta
 
 def generate_conversation_title(first_message:str)-> str:
     response = client.chat.completions.create(
@@ -71,49 +70,47 @@ def generate_conversation_title(first_message:str)-> str:
 
 def stream_file_chat_response(
         file_content: str,
-        filename :str,
+        filename: str,
         conversation_history: list,
         new_messages: str
 ):
     system_prompt = build_file_context_prompt(filename, file_content)
-    messages= [{"role": "system", "content": system_prompt}]
+    messages = [{"role": "system", "content": system_prompt}]
 
     for msg in conversation_history:
         messages.append({"role": msg.role, "content": msg.content})
 
-    messages.append({"role": "user", "content" :new_messages})
+    messages.append({"role": "user", "content": new_messages})
 
     stream = client.chat.completions.create(
-        model = "gpt-4o-mini",
-        messages = messages,
-        max_tokens = 2000,
-        temperature = 0.7,
-        stream = True
+        model="gpt-4o-mini",
+        messages=messages,
+        max_tokens=2000,
+        temperature=0.7,
+        stream=True
     )
 
     for chunk in stream:
         delta = chunk.choices[0].delta.content
         if delta is not None:
-            yield f"data: {delta}\n\n"
+            yield delta   # raw token only — no SSE wrapping, no sentinel
 
-    yield "data: [DONE]\n\n"
 
-def stream_rag_response(rag_prompt:str, query:str) -> Generator:
-    messages =[
+def stream_rag_response(rag_prompt: str, query: str) -> Generator:
+    messages = [
         {
-            "role" : "system",
-            "content" : rag_prompt
+            "role": "system",
+            "content": rag_prompt
         }
     ]
-    stream =client.chat.completions.create(
-        model ="gpt-4o-mini",
-        messages= messages,
-        max_tokens =1500,
-        temperature= 0.3,
-        stream = True
+    stream = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=messages,
+        max_tokens=1500,
+        temperature=0.3,
+        stream=True
     )
     for chunk in stream:
         delta = chunk.choices[0].delta.content
         if delta is not None:
-            yield f"data: {delta}\n\n"
-    yield "data: [DONE]\n\n"
+            yield delta   # raw token only

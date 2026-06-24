@@ -44,7 +44,8 @@ export interface ConversationDetail{
 
 export interface StreamMetadata{
   conversation_id: number,
-  is_first_message: boolean
+  is_first_message: boolean,
+  user_message_id?: number
 }
 
 export interface UploadedFile{
@@ -83,4 +84,29 @@ export interface Repository {
   repo_name: string
   status: 'pending' | 'ingesting' | 'completed' | 'failed'
   files_ingested: number
+}
+
+export interface DailyActivity{
+  date: string
+  messages: number
+}
+
+export interface DashboardStats {
+  total_conversations: number
+  total_messages: number
+  total_files: number
+  uploaded_documents: number
+  repository_files: number
+  total_repositories: number
+  total_embedded_chunks: number
+  estimated_tokens_used: number
+  daily_activity: DailyActivity[]
+}
+
+export interface SavedResponse {
+  id: number
+  content: string
+  conversation_title: string | null
+  note: string | null
+  created_at: string
 }

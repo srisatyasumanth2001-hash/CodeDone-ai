@@ -7,6 +7,7 @@ class MessageResponse(BaseModel):
     role: str
     content: str
     created_at: datetime
+    is_saved: bool = False
 
     class Config:
         from_attributes = True

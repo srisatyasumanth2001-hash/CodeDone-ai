@@ -11,12 +11,12 @@ export default function Repositories() {
   }, [loadRepositories])
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto p-6">
+    <div className="flex flex-col h-full overflow-y-auto p-6 bg-white dark:bg-slate-950">
       <div className="max-w-3xl mx-auto w-full">
 
         <div className="mb-6">
-          <h1 className="text-lg font-semibold text-white">Repository Analysis</h1>
-          <p className="text-gray-400 text-sm mt-0.5">
+          <h1 className="text-lg font-semibold text-slate-600 dark:text-white">Repository Analysis</h1>
+          <p className="text-slate-600 dark:text-white text-sm mt-0.5">
             Connect a public GitHub repository and ask questions about its codebase
           </p>
         </div>
@@ -32,7 +32,7 @@ export default function Repositories() {
 
         <div className="mt-6 space-y-3">
           {repositories.length === 0 && (
-            <div className="text-center py-12 text-gray-500 text-sm">
+            <div className="text-center py-12 text-slate-600 dark:text-slate-400 text-sm">
               No repositories connected yet
             </div>
           )}

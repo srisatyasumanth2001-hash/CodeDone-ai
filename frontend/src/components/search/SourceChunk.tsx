@@ -22,7 +22,7 @@ function SimilarityBar({ score }: { score: number }) {
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <span className="text-xs text-gray-400 flex-shrink-0">{percentage}%</span>
+      <span className="text-xs text-slate-600 dark:text-slate-400 flex-shrink-0">{percentage}%</span>
     </div>
   )
 }
@@ -37,7 +37,7 @@ export default function SourceChunk({ chunk, index }: Props) {
         <span className="text-xs font-semibold text-blue-400">
           Source {index}
         </span>
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-slate-600 dark:text-slate-400">
           Doc #{chunk.document_id}
         </span>
       </div>
@@ -46,7 +46,7 @@ export default function SourceChunk({ chunk, index }: Props) {
       <SimilarityBar score={chunk.similarity} />
 
       {/* Chunk text */}
-      <p className="text-xs text-gray-300 leading-relaxed mt-3 line-clamp-6">
+      <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-3 line-clamp-6">
         {chunk.chunk_text}
       </p>
     </div>

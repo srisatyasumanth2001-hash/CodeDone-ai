@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import type { Conversation } from '../../types'
 import { deleteConversation } from '../../api/chat'
-
+import { Trash2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 interface Props {
   conversations: Conversation[]
   activeConversationId: number | null
@@ -19,14 +20,18 @@ export default function ConversationList({
 }: Props) {
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [deletingId, setDeletingId] = useState<number | null>(null)
+  const navigate = useNavigate()
 
-  const handleDelete = async (e: React.MouseEvent, conversationId: number) => {
-    // stop the click from also selecting the conversation
+  const handleDelete = async (
+    e: React.MouseEvent,
+    conversationId: number
+  ) => {
     e.stopPropagation()
 
     if (!confirm('Delete this conversation?')) return
 
     setDeletingId(conversationId)
+
     try {
       await deleteConversation(conversationId)
       onDeleted(conversationId)
@@ -40,21 +45,54 @@ export default function ConversationList({
   return (
     <div className="flex flex-col h-full">
 
-      {/* new chat button */}
-      <div className="p-3 border-b border-gray-800">
+      {/* New Conversation */}
+      <div className="p-3 border-b border-slate-200/60 dark:border-slate-800/60" onClick={() =>  {navigate(`/dashboard/chat`)
+}}>
         <button
           onClick={onNew}
-          className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-gray-800 border border-gray-700 hover:border-gray-600 transition-colors flex items-center gap-2"
+          className="
+            w-full
+            flex
+            items-center
+            gap-2
+
+            px-3
+            py-2.5
+
+            rounded-xl
+
+            text-sm
+
+            bg-white
+            dark:bg-slate-900
+
+            border
+            border-slate-200
+            dark:border-slate-700
+
+            text-slate-700
+            dark:text-slate-300
+
+            hover:bg-slate-50
+            dark:hover:bg-slate-800
+
+            hover:border-slate-300
+            dark:hover:border-slate-600
+
+            transition-all
+            duration-200
+          "
         >
           <span className="text-lg leading-none">+</span>
-          New Conversation
+          <span>New Conversation</span>
         </button>
       </div>
 
-      {/* list */}
+      {/* Conversation List */}
       <div className="flex-1 overflow-y-auto p-2">
+
         {conversations.length === 0 ? (
-          <p className="text-gray-600 text-xs text-center mt-4 px-3">
+          <p className="text-slate-500 text-xs text-center mt-4 px-3">
             No conversations yet.
           </p>
         ) : (
@@ -63,30 +101,91 @@ export default function ConversationList({
               key={conv.id}
               onMouseEnter={() => setHoveredId(conv.id)}
               onMouseLeave={() => setHoveredId(null)}
-              onClick={() => onSelect(conv.id)}
+              onClick={() =>  {navigate(`/dashboard/chat/${conv.id}`)
+}}
               className={`
-                group flex items-center justify-between gap-1
-                px-3 py-2.5 rounded-lg text-sm mb-1 cursor-pointer transition-colors
-                ${activeConversationId === conv.id
-                  ? 'bg-gray-700 text-white'
-                  : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
+                group
+
+                flex
+                items-center
+                justify-between
+
+                gap-2
+
+                px-3
+                py-2.5
+
+                rounded-xl
+
+                text-sm
+
+                mb-1
+
+                cursor-pointer
+
+                transition-all
+                duration-200
+
+                ${
+                  activeConversationId === conv.id
+                    ? `
+                      bg-slate-200
+                      dark:bg-slate-800
+
+                      text-slate-900
+                      dark:text-white
+
+                      shadow-sm
+                    `
+                    : `
+                      text-slate-700
+                      dark:text-slate-300
+
+                      hover:bg-slate-100
+                      dark:hover:bg-slate-900
+
+                      hover:text-slate-900
+                      dark:hover:text-white
+                    `
                 }
               `}
             >
-              {/* conversation title */}
-              <span className="truncate flex-1 text-left">
+              {/* Title */}
+              <span className="truncate flex-1">
                 {conv.title}
               </span>
 
-              {/* delete button — only shows on hover */}
+              {/* Delete Button */}
               {hoveredId === conv.id && (
                 <button
-                  onClick={(e) => handleDelete(e, conv.id)}
+                  onClick={(e) =>
+                    handleDelete(e, conv.id)
+                  }
                   disabled={deletingId === conv.id}
-                  className="flex-shrink-0 text-gray-500 hover:text-red-400 transition-colors disabled:opacity-50 p-0.5 rounded"
+                  className="
+                    flex-shrink-0
+
+                    text-slate-400
+                    hover:text-red-500
+
+                    dark:text-slate-500
+                    dark:hover:text-red-400
+
+                    transition-colors
+
+                    disabled:opacity-50
+
+                    p-1
+
+                    rounded-md
+                  "
                   title="Delete conversation"
                 >
-                  {deletingId === conv.id ? '...' : '🗑'}
+                  {deletingId === conv.id ? (
+                    <span className="text-xs">...</span>
+                  ) : (
+                    <Trash2 size={15} />
+                  )}
                 </button>
               )}
             </div>

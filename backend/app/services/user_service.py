@@ -19,10 +19,18 @@ def get_user_by_id(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
 # UPDATE
+# def update_user_name(db: Session, user_id: int, full_name: str):
+#     user = db.query(User).filter(User.id == user_id).first()
+#     user.full_name = full_name
+#     db.commit()
+#     return user
 def update_user_name(db: Session, user_id: int, full_name: str):
-    user = db.query(User).filter(User.id == user_id).first()
+    user = get_user_by_id(db, user_id)
+    if not user:
+        return None
     user.full_name = full_name
     db.commit()
+    db.refresh(user)
     return user
 
 # DELETE

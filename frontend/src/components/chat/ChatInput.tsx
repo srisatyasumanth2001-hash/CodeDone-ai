@@ -1,21 +1,39 @@
-import { useState} from 'react'
+import { useState, useRef } from 'react'
 import type { KeyboardEvent } from 'react'
+import type { ChangeEvent } from 'react'
 
 interface Props {
   onSend: (message: string) => void
   isStreaming: boolean
 }
 
+const MAX_HEIGHT = 500 // px — roughly 8 lines before it scrolls internally instead of growing further
+
 export default function ChatInput({ onSend, isStreaming }: Props) {
   const [input, setInput] = useState('')
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const adjustHeight = () => {
+    const ta = textareaRef.current
+    if (!ta) return
+    ta.style.height = 'auto'   // reset so scrollHeight reflects the CURRENT content, not the old fixed height
+    ta.style.height = Math.min(ta.scrollHeight, MAX_HEIGHT) + 'px'
+  }
+
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value)
+    adjustHeight()
+  }
 
   const handleSend = () => {
     if (!input.trim() || isStreaming) return
     onSend(input.trim())
     setInput('')
+    requestAnimationFrame(() => {
+      if (textareaRef.current) textareaRef.current.style.height = 'auto'  // collapse back to one line after sending
+    })
   }
 
-  // send on Enter, new line on Shift+Enter
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
@@ -24,16 +42,18 @@ export default function ChatInput({ onSend, isStreaming }: Props) {
   }
 
   return (
-    <div className="border-t border-gray-800 p-4">
-      <div className="flex gap-3 items-end bg-gray-800 border border-gray-700 rounded-xl p-3">
+    <div className="border-r border-gray-700 p-4">
+      <div className="flex gap-3 items-end border
+                      border-slate-300
+                      dark:border-slate-700 bg-white dark:bg-slate-950 rounded-xl p-3">
         <textarea
+          ref={textareaRef}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleChange}
           onKeyDown={handleKeyDown}
           placeholder="Ask a coding question..."
           rows={1}
-          className="flex-1 bg-transparent text-white text-sm resize-none outline-none placeholder-gray-500 max-h-32"
-          style={{ minHeight: '24px' }}
+          className="flex-1 bg-transparent text-black dark:text-white text-sm resize-none outline-none placeholder-gray-500 overflow-y-auto"
           disabled={isStreaming}
         />
         <button

@@ -47,10 +47,11 @@ export default function Files() {
   }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
+    <div className="h-full overflow-y-auto bg-white dark:bg-slate-950">
+    <div className="p-6 max-w-3xl mx-auto ">
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-white mb-1">Files</h1>
-        <p className="text-gray-400 text-sm">
+        <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">Files</h1>
+        <p className="text-gray-900 dark:text-white text-sm">
           Upload code files, PDFs, or documents and chat with AI about them.
         </p>
       </div>
@@ -62,14 +63,14 @@ export default function Files() {
 
       {/* file list */}
       <div>
-        <h2 className="text-sm font-medium text-gray-400 mb-3">
+        <h2 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
           Your Files {files.length > 0 && `(${files.length})`}
         </h2>
 
         {isLoading ? (
-          <div className="text-gray-500 text-sm">Loading files...</div>
+          <div className="text-gray-900 dark:text-white dark:text-white text-sm">Loading files...</div>
         ) : files.length === 0 ? (
-          <div className="text-center py-12 border border-dashed border-gray-700 rounded-xl">
+          <div className="text-center py-12 border border-dashed  rounded-xl">
             <div className="text-3xl mb-2">📂</div>
             <p className="text-gray-500 text-sm">No files uploaded yet</p>
           </div>
@@ -86,6 +87,7 @@ export default function Files() {
           </div>
         )}
       </div>
+    </div>
     </div>
   )
 }

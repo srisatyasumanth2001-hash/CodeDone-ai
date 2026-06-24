@@ -20,3 +20,6 @@ class UserResponse(BaseModel):
 
 class RefreshRequest(BaseModel):
     refresh_token: str
+
+class UpdateProfileRequest(BaseModel):
+    full_name: str
