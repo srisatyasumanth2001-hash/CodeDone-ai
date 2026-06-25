@@ -4,12 +4,15 @@ import FileUploadZone from '../components/files/FileUploadZone'
 import FileCard from '../components/files/FileCard'
 import { getFiles, deleteFile } from '../api/file'
 import type { UploadedFile, UploadResponse } from '../types'
+import ConfirmDialog from '../components/ui/ConfirmDialog'
 
 export default function Files() {
   const [files, setFiles] = useState<UploadedFile[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
-
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [selectedFileId, setSelectedFileId] = useState<number | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
   const loadFiles = async () => {
     try {
       const data = await getFiles()
@@ -30,15 +33,30 @@ export default function Files() {
     loadFiles()
   }
 
-  const handleDelete = async (fileId: number) => {
-    if (!confirm('Delete this file and its chat history?')) return
-    try {
-      await deleteFile(fileId)
-      setFiles(prev => prev.filter(f => f.id !== fileId))
-    } catch (error) {
-      console.error('Failed to delete file:', error)
-    }
+ const handleDelete = (fileId: number) => {
+  setSelectedFileId(fileId)
+  setShowDeleteModal(true)
+}
+  const handleConfirmDelete = async () => {
+  if (!selectedFileId) return
+
+  setIsDeleting(true)
+
+  try {
+    await deleteFile(selectedFileId)
+
+    setFiles(prev =>
+      prev.filter(f => f.id !== selectedFileId)
+    )
+
+    setShowDeleteModal(false)
+    setSelectedFileId(null)
+  } catch (error) {
+    console.error('Failed to delete file:', error)
+  } finally {
+    setIsDeleting(false)
   }
+}
 
   const handleChat = (file: UploadedFile) => {
     // navigate to a dedicated file chat page
@@ -87,6 +105,18 @@ export default function Files() {
           </div>
         )}
       </div>
+      <ConfirmDialog
+        open={showDeleteModal}
+        title="Delete File"
+        message="Are you sure you want to delete this file and its chat history? This action cannot be undone."
+        confirmText={isDeleting ? 'Deleting...' : 'Delete'}
+        cancelText="Cancel"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setShowDeleteModal(false)
+          setSelectedFileId(null)
+        }}
+      />
     </div>
     </div>
   )

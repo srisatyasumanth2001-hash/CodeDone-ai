@@ -2,6 +2,7 @@ import type { Message } from '../../types'
 import { useState } from 'react'
 import { saveResponse } from '../../api/savedResponse'
 import MessageContent from './MessageContent'
+import { CircleUser, SparkleIcon } from 'lucide-react'
 
 interface Props {
   message: Message
@@ -39,16 +40,16 @@ export default function MessageBubble({ message, isStreaming = false }: Props) {
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
       {!isUser && (
-        <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold mr-3 flex-shrink-0 mt-1">
-          AI
+        <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold mr-3 flex-shrink-0 mt-1 animate-pulse">
+          <SparkleIcon size={18}></SparkleIcon>
         </div>
       )}
 
       <div
         className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
           isUser
-            ? 'bg-blue-600 text-white rounded-tr-sm'
-            : 'bg-gray-800 text-gray-100 rounded-tl-sm border border-gray-700'
+            ? 'bg-white-600 text-black-100 rounded-tr-sm border border-blue-700'
+            : 'bg-white-600 text-black-100 rounded-tl-sm border border-green-700'
         }`}
       >
         <MessageContent content={message.content} />
@@ -64,7 +65,7 @@ export default function MessageBubble({ message, isStreaming = false }: Props) {
 
       {isUser && (
         <div className="w-7 h-7 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-bold ml-3 flex-shrink-0 mt-1">
-          You
+          <CircleUser size={18}></CircleUser>
         </div>
       )}
     </div>

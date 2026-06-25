@@ -18,4 +18,5 @@ export const createConversation = async (): Promise<Conversation>=>{
 
 export const deleteConversation = async (id:number): Promise<void>=>{
     await api.delete(`/chat/conversations/${id}`)
+
 }

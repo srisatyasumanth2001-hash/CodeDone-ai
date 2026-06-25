@@ -15,3 +15,12 @@ export const listRepositories = async (): Promise<Repository[]> => {
   const response = await api.get('/repositories/')
   return response.data
 }
+
+export const deleteRepository = async (id: number): Promise<void> => {
+  await api.delete(`/repositories/${id}`)
+}
+
+export const bulkDeleteRepositories = async (ids: number[]): Promise<{ deleted_count: number }> => {
+  const response = await api.post('/repositories/bulk-delete', { repository_ids: ids })
+  return response.data
+}

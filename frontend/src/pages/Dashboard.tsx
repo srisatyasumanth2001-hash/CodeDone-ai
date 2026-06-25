@@ -72,7 +72,7 @@ export default function Dashboard() {
         >
           {sidebarOpen ? (
             <>
-              <span className="text-lg font-semibold text-blue-600 dark:text-blue-400 animate-pulse">
+              <span className="text-lg font-semibold text-blue-900 dark:text-blue-400 animate-pulse">
                 CodeDone AI
               </span>
               <ThemeToggle />
@@ -248,7 +248,7 @@ export default function Dashboard() {
 
           {/* Show logo when sidebar is closed so user knows where they are */}
           {!sidebarOpen && (
-            <span className="text-sm font-semibold text-blue-600 dark:text-blue-400 animate-pulse">
+            <span className="text-sm font-semibold text-blue-900 dark:text-blue-400 animate-pulse">
               CodeDone AI
             </span>
           )}

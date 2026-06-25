@@ -3,6 +3,7 @@ import type { Conversation } from '../../types'
 import { deleteConversation } from '../../api/chat'
 import { Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import ConfirmDialog from '../ui/ConfirmDialog'
 interface Props {
   conversations: Conversation[]
   activeConversationId: number | null
@@ -21,15 +22,14 @@ export default function ConversationList({
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const navigate = useNavigate()
-
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [selectedConversationId, setSelectedConversationId] =
+  useState<number | null>(null)
   const handleDelete = async (
     e: React.MouseEvent,
     conversationId: number
   ) => {
     e.stopPropagation()
-
-    if (!confirm('Delete this conversation?')) return
-
     setDeletingId(conversationId)
 
     try {
@@ -41,7 +41,16 @@ export default function ConversationList({
       setDeletingId(null)
     }
   }
+  const handleConfirmDelete = async () => {
+  if (!selectedConversationId) return
 
+  await deleteConversation(selectedConversationId)
+
+  onDeleted(selectedConversationId)
+  navigate('dashboard/chat')
+  setShowDeleteModal(false)
+  setSelectedConversationId(null)
+}
   return (
     <div className="flex flex-col h-full">
 
@@ -158,9 +167,11 @@ export default function ConversationList({
               {/* Delete Button */}
               {hoveredId === conv.id && (
                 <button
-                  onClick={(e) =>
-                    handleDelete(e, conv.id)
-                  }
+                  onClick={(e) => {
+                  e.stopPropagation()
+                  setSelectedConversationId(conv.id)
+                  setShowDeleteModal(true)
+                }}
                   disabled={deletingId === conv.id}
                   className="
                     flex-shrink-0
@@ -191,6 +202,16 @@ export default function ConversationList({
             </div>
           ))
         )}
+        <ConfirmDialog
+          open={showDeleteModal}
+          title="Delete Conversation"
+          message="This conversation and all its messages will be permanently deleted."
+          onConfirm={handleConfirmDelete}
+          onCancel={() => {
+            setShowDeleteModal(false)
+            setSelectedConversationId(null)
+          }}
+        />
       </div>
     </div>
   )

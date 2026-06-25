@@ -34,8 +34,8 @@ export default function Login(){
     return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center">
       <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 w-full max-w-md">
-        <h1 className="text-2xl font-semibold text-white mb-2">Welcome back</h1>
-        <p className="text-gray-400 text-sm mb-6">Sign in to CodeDone AI</p>
+        <h1 className="text-2xl font-semibold text-white mb-2">Welcome</h1>
+        <p className="text-gray-400 text-sm mb-6">Sign up to CodeDone AI</p>
 
         {error && (
           <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-lg p-3 mb-4">

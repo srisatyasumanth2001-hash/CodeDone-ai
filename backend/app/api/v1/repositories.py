@@ -4,8 +4,9 @@ from app.core.database import get_db, SessionLocal
 from app.core.security import get_current_user
 from app.models.user import User
 from app.models.repository import Repository
-from app.services.repository_service import create_repository, ingest_repository
-from app.schemas.repositories import ConnectRepoRequest, RepositoryResponse
+from app.services.repository_service import create_repository, ingest_repository, delete_repositories_bulk
+from app.services import repository_service
+from app.schemas.repositories import ConnectRepoRequest, RepositoryResponse, BulkDeleteRequest
 
 router = APIRouter()
 
@@ -58,3 +59,28 @@ def get_repository(
         raise HTTPException(status_code=404, detail="Repository not found")
 
     return repo
+
+@router.delete("/{repository_id}")
+def delete_repository(
+    repository_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    deleted = repository_service.delete_repository(db, repository_id, current_user.id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Repository not found")
+    return {"message": "Repository deleted successfully"}
+
+@router.post("/bulk-delete")
+def bulk_delete_repositories(
+    data: BulkDeleteRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if not data.repository_ids:
+        raise HTTPException(status_code=400, detail="No repository ids provided")
+
+    deleted_count = delete_repositories_bulk(
+        db, data.repository_ids, current_user.id
+    )
+    return {"deleted_count": deleted_count}

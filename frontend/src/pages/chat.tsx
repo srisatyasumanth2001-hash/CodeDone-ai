@@ -245,7 +245,7 @@ export default function Chat() {
             >
               <div className="text-5xl mb-5 animate-pulse">⚡</div>
 
-              <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2">
+              <h2 className="text-2xl font-semibold text-blue-900 dark:text-white mb-2">
                 CodeDone AI
               </h2>
 

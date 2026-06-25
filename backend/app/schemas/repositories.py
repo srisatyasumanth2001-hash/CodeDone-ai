@@ -15,3 +15,6 @@ class RepositoryResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class BulkDeleteRequest(BaseModel):
+    repository_ids: list[int]

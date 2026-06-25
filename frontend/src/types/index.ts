@@ -67,8 +67,11 @@ export interface UploadResponse {
 
 export interface ChunkResult {
   chunk_text: string
-  similarity: number
+  chunk_index: number
   document_id: number
+  filename: string
+  source_type: 'upload' | 'repository'
+  similarity: number
 }
 
 export interface SearchResult {
@@ -109,4 +112,14 @@ export interface SavedResponse {
   conversation_title: string | null
   note: string | null
   created_at: string
+}
+
+export interface ConfirmDialogProps {
+  open: boolean
+  title: string
+  message: string
+  confirmText?: string
+  cancelText?: string
+  onConfirm: () => void
+  onCancel: () => void
 }

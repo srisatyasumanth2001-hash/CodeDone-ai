@@ -148,7 +148,7 @@ export default function Search() {
             Retrieved Sources
 
             {sources.length > 0 && (
-              <span className="ml-2 text-blue-500 dark:text-blue-400">
+              <span className="ml-2 text-green-500 dark:text-blue-400">
                 ({sources.length})
               </span>
             )}

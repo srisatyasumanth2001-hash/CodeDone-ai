@@ -1,11 +1,15 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import type { Repository } from '../types'
 import { connectRepository, getRepository, listRepositories } from '../api/repositories'
+import { deleteRepository, bulkDeleteRepositories } from '../api/repositories'
 
 export function useRepositories() {
   const [repositories, setRepositories] = useState<Repository[]>([])
   const [isConnecting, setIsConnecting] = useState(false)
   const [error, setError] = useState('')
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
+  const [isDeleting, setIsDeleting] = useState(false)
+
 
   // Tracks active polling intervals so we can clean them up properly
   const pollingRefs = useRef<Map<number, number>>(new Map())
@@ -62,7 +66,7 @@ export function useRepositories() {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
+  
   // Cleanup all intervals when the component unmounts
   useEffect(() => {
     return () => {
@@ -71,5 +75,49 @@ export function useRepositories() {
     }
   }, [])
 
-  return { repositories, isConnecting, error, connect, loadRepositories }
+  
+
+
+  const toggleSelect = useCallback((id: number) => {
+      setSelectedIds(prev => {
+        const next = new Set(prev)
+        if (next.has(id)) next.delete(id)
+        else next.add(id)
+        return next
+      })
+    }, [])
+  const clearSelection = useCallback(() => setSelectedIds(new Set()), [])
+
+  const deleteSelected = useCallback(async () => {
+    if (selectedIds.size === 0) return
+    setIsDeleting(true)
+    try {
+      const ids = Array.from(selectedIds)
+      await bulkDeleteRepositories(ids)
+      setRepositories(prev => prev.filter(r => !selectedIds.has(r.id)))
+      setSelectedIds(new Set())
+    } catch {
+      setError('Failed to delete selected repositories')
+    } finally {
+      setIsDeleting(false)
+    }
+    }, [selectedIds])
+
+  const deleteOne = useCallback(async (id: number) => {
+    try {
+      await deleteRepository(id)
+      setRepositories(prev => prev.filter(r => r.id !== id))
+      setSelectedIds(prev => {
+        const next = new Set(prev)
+        next.delete(id)
+        return next
+      })
+    } catch {
+      setError('Failed to delete repository')
+    }
+  }, [])
+  return {
+    repositories, isConnecting, error, connect, loadRepositories,
+    selectedIds, isDeleting, toggleSelect, clearSelection, deleteSelected, deleteOne
+  }
 }
