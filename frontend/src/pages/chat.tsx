@@ -10,7 +10,6 @@ export default function Chat() {
     conversations,
     messages,
     activeConversationId,
-    activeConversationTitle,
     isStreaming,
     isLoading,
     messagesEndRef,
@@ -158,7 +157,6 @@ export default function Chat() {
           <ConversationList
             conversations={conversations}
             activeConversationId={activeConversationId}
-            onSelect={openConversation}
             onNew={startNewConversation}
             onDeleted={deleteConversationById}
           />

@@ -7,7 +7,6 @@ import ConfirmDialog from '../ui/ConfirmDialog'
 interface Props {
   conversations: Conversation[]
   activeConversationId: number | null
-  onSelect: (id: number) => void
   onNew: () => void
   onDeleted: (id: number) => void
 }
@@ -15,7 +14,6 @@ interface Props {
 export default function ConversationList({
   conversations,
   activeConversationId,
-  onSelect,
   onNew,
   onDeleted
 }: Props) {
@@ -25,31 +23,34 @@ export default function ConversationList({
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [selectedConversationId, setSelectedConversationId] =
   useState<number | null>(null)
-  const handleDelete = async (
-    e: React.MouseEvent,
-    conversationId: number
-  ) => {
-    e.stopPropagation()
-    setDeletingId(conversationId)
+  // const handleDelete = async (
+  //   e: React.MouseEvent,
+  //   conversationId: number
+  // ) => {
+  //   e.stopPropagation()
+  //   setDeletingId(conversationId)
 
-    try {
-      await deleteConversation(conversationId)
-      onDeleted(conversationId)
-    } catch (error) {
-      console.error('Failed to delete conversation:', error)
-    } finally {
-      setDeletingId(null)
-    }
-  }
+  //   try {
+  //     await deleteConversation(conversationId)
+  //     onDeleted(conversationId)
+  //   } catch (error) {
+  //     console.error('Failed to delete conversation:', error)
+  //   } finally {
+  //     setDeletingId(null)
+  //   }
+  // }
   const handleConfirmDelete = async () => {
   if (!selectedConversationId) return
-
+  setDeletingId(selectedConversationId)
+  try{
   await deleteConversation(selectedConversationId)
 
   onDeleted(selectedConversationId)
-  navigate('dashboard/chat')
+  navigate('dashboard/chat')}
+  finally{
+  setDeletingId(null)
   setShowDeleteModal(false)
-  setSelectedConversationId(null)
+  setSelectedConversationId(null)}
 }
   return (
     <div className="flex flex-col h-full">

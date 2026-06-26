@@ -28,7 +28,7 @@ export default function Files() {
     loadFiles()
   }, [])
 
-  const handleUploadComplete = (result: UploadResponse) => {
+  const handleUploadComplete = (_result: UploadResponse) =>  {
     // reload the file list after a successful upload
     loadFiles()
   }

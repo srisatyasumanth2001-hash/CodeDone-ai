@@ -17,7 +17,7 @@ export default function Login(){
         setLoading(true)
         setError('')
         try{
-            const tokens = await signupUser({email, password,full_name})
+            await signupUser({email, password,full_name})
             localStorage.getItem('access_token')
             localStorage.getItem('refresh_token')
             const user = await getMyProfile()
