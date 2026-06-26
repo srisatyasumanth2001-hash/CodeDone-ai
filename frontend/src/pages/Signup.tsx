@@ -17,9 +17,9 @@ export default function Login(){
         setLoading(true)
         setError('')
         try{
-            await signupUser({email, password,full_name})
-            localStorage.getItem('access_token')
-            localStorage.getItem('refresh_token')
+            const tokens = await signupUser({email, password,full_name})
+            localStorage.setItem("access_token", tokens.access_token)
+            localStorage.setItem("refresh_token", tokens.refresh_token)
             const user = await getMyProfile()
             setUser(user)
             navigate('/dashboard')

@@ -3,6 +3,8 @@ export interface User {
   id: number
   email: string
   full_name: string
+  access_token: string
+  refresh_token:string
 }
 
 export interface TokenResponse {
