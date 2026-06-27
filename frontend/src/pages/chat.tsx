@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import MessageBubble from '../components/chat/MessageBubble'
 import ChatInput from '../components/chat/ChatInput'
 import ConversationList from '../components/chat/ConversationList'
+import { useAuthStore } from '../store/authStore'
 
 export default function Chat() {
   const {
@@ -19,6 +20,7 @@ export default function Chat() {
     deleteConversationById,
     sendMessage
   } = useChat()
+  const { user} = useAuthStore()
   const {conversationId} = useParams()
   const [conversationOpen, setConversationOpen] = useState(true)
 
@@ -244,7 +246,10 @@ export default function Chat() {
               <div className="text-5xl mb-5 animate-pulse">⚡</div>
 
               <h2 className="text-2xl font-semibold text-blue-900 dark:text-white mb-2">
-                CodeDone AI
+                CodeDone AI 
+              </h2>
+              <h2 className="text-2xl font-semibold text-blue-900 dark:text-white mb-2">
+                Welcome {user?.full_name}
               </h2>
 
               <p className="text-slate-600 dark:text-slate-400 text-sm max-w-md mb-6">
