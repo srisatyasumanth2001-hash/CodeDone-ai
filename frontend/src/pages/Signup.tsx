@@ -44,6 +44,16 @@ export default function Login(){
         )}
 
         <div className="space-y-4">
+           <div>
+            <label className="text-sm text-gray-400 block mb-1">UserName</label>
+            <input
+              type="full_name"
+              value={full_name}
+              onChange={(e) => setFull_name(e.target.value)}
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500"
+              placeholder="Name"
+            />
+          </div>
           <div>
             <label className="text-sm text-gray-400 block mb-1">Email</label>
             <input
@@ -65,16 +75,7 @@ export default function Login(){
               placeholder="••••••••"
             />
           </div>
-          <div>
-            <label className="text-sm text-gray-400 block mb-1">Password</label>
-            <input
-              type="full_name"
-              value={full_name}
-              onChange={(e) => setFull_name(e.target.value)}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500"
-              placeholder="••••••••"
-            />
-          </div>
+         
 
           <button
             onClick={handleSignup}
